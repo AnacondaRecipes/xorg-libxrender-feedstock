@@ -3,7 +3,6 @@
 {% set name = "xorg-" ~ xorg_name %}
 {% set version = "0.9.12" %}
 {% set sha256 = "b832128da48b39c8d608224481743403ad1691bf4e554e4be9c174df171d1b97" %}
-{% set am_version = "1.16" %} # keep synchronized with build.sh
 
 package:
   name: {{ name|lower }}
@@ -16,6 +15,8 @@ source:
 
 build:
   number: 0
+  # xorg-libxdmcp, libxcb, libx11, libice aren't available on Windows because their dependencies clash with m2/msys2 and mingw64/ucrt64 toolchains.
+  skip: true  # [win]
   run_exports:
     - {{ pin_subpackage(name|lower, max_pin='x.x') }}
 
@@ -31,9 +32,7 @@ requirements:
     - make                         # [unix]
     - m2-make                      # [win]
     - {{ compiler('c') }}          # [unix]
-    - {{ stdlib('c') }}            # [unix]
     - {{ compiler('m2w64_c') }}    # [win]
-    - {{ stdlib('m2w64_c') }}      # [win]
     - autoconf                     # [unix]
     - automake                     # [unix]
     - gettext                      # [unix]
@@ -50,17 +49,19 @@ test:
     {% set lib_idents = [ "Xrender" ] %}
     {% for lib_ident in lib_idents %}
     - test -f $PREFIX/lib/lib{{ lib_ident }}.dylib  # [osx]
-    - test -f $PREFIX/lib/lib{{ lib_ident }}.so     # [linux]
+    - test -f $PREFIX/lib/lib{{ lib_ident }}.so  # [linux]
     - if not exist %PREFIX%/Library/lib/lib{{ lib_ident }}.dll.a exit /b 1  # [win]
     - if not exist %PREFIX%/Library/bin/msys-{{ lib_ident }}-*.dll exit /b 1  # [win]
     {% endfor %}
 
 about:
   home: https://www.x.org/
+  dev_url: https://gitlab.freedesktop.org/xorg/lib/libxrender
+  doc_url: https://gitlab.freedesktop.org/xorg/lib/libxrender
   license: MIT
   license_family: MIT
   license_file: COPYING
-  summary: 'The X.org X11 direct rendering library.'
+  summary: The X.org X11 direct rendering library.
 
 extra:
   recipe-maintainers:
