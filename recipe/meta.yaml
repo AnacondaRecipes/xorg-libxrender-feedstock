@@ -1,5 +1,5 @@
 {% set name = "xorg-libXrender" %}
-{% set version = "0.9.12" %}
+{% set version = "0.9.13" %}
 
 package:
   name: {{ name|lower }}
@@ -8,10 +8,10 @@ package:
 source:
   fn: {{ name }}-{{ version }}.tar.bz2
   url: https://www.x.org/releases/individual/lib/{{ name.split('-')[1] }}-{{ version }}.tar.xz
-  sha256: b832128da48b39c8d608224481743403ad1691bf4e554e4be9c174df171d1b97
+  sha256: 3fe88c609df6782e1e7af2e4de36b2563d70cd70ff7dcb1cda561ad64912bb64
 
 build:
-  number: 1
+  number: 0
   # xorg-libxdmcp, libxcb, libx11, libice aren't available on Windows because their dependencies clash with m2/msys2 and mingw64/ucrt64 toolchains.
   skip: true  # [win]
   run_exports:
@@ -36,7 +36,7 @@ requirements:
 test:
   commands:
     - test -f $PREFIX/lib/libXrender.dylib  # [osx]
-    - test -f $PREFIX/lib/libXrender.so     # [linux]
+    - test -f $PREFIX/lib/libXrender.so  # [linux]
 
 about:
   home: https://www.x.org/
@@ -48,6 +48,13 @@ about:
   summary: The X.org X11 direct rendering library.
   description: |
     The X.org X11 direct rendering library.
+
+
+
+
+
+
+
 
 extra:
   recipe-maintainers:
